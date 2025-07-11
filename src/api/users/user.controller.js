@@ -12,6 +12,7 @@ import { welcomeEmailTemplate } from './../../utils/templates.js';
 
 
 
+
 import {
   registerUserService,
   loginUserService,
@@ -110,12 +111,21 @@ export const getAllUsers = async (req, res) => {
 // Update user
 export const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;  // Get userId from the URL
-    const updatedUser = await updateUserService(req, res);
+    // Log incoming data for debugging
+    console.log('Updated Data:', req.body);  // Should log updated fields (e.g., username, email)
+    console.log('File:', req.file);  // Should log the uploaded file (if any)
 
+    const { id } = req.params;  // Get userId from the URL
+    const updatedData = req.body; // Extract updated fields (like username, email) from the body
+    const file = req.file;  // Get the uploaded file (if any)
+
+    // Call the service to update the user profile, passing both updatedData and file
+    const updatedUser = await updateUserService(id, updatedData, file);
+
+    // Send a response with the updated user data
     res.status(200).json({
       message: 'User updated successfully',
-      user: updatedUser,  // Send back the updated user
+      user: updatedUser,  // Return the updated user data
     });
   } catch (error) {
     console.error('Error updating user profile:', error);
