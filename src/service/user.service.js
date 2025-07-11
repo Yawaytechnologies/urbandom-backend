@@ -129,8 +129,9 @@ export const updateUserService = async (req, res) => {
 };
 
 // Delete user service
-export const deleteUserService = async (username) => {
-  const user = await User.findOneAndDelete({ username });
+export const deleteUserService = async (req,res) => {
+  const {id} =req.params; 
+  const user = await User.findByIdAndDelete(id);
   if (!user) {
     throw new Error('User not found');
   }
