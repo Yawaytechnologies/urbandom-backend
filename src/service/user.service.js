@@ -132,10 +132,20 @@ export const updateUserService = async (userId, updatedData, file) => {
 };
 
 // Delete user service
-export const deleteUserService = async (req,res) => {
-  const {id} =req.params; 
-  const user = await User.findByIdAndDelete(id);
-  if (!user) {
-    throw new Error('User not found');
+export const deleteUserService = async (userId) => {
+  try {
+    const objectId = new mongoose.Types.ObjectId(userId); // Convert the userId to MongoDB ObjectId
+
+    // Find and delete the user by their ObjectId
+    const deletedUser = await User.findByIdAndDelete(objectId);
+
+    if (!deletedUser) {
+      throw new Error('User not found');
+    }
+
+    return deletedUser;  // Return the deleted user document (optional)
+  } catch (error) {
+    console.error('Error in deleteUserService:', error);
+    throw error; // Propagate the error to be handled by the controller
   }
 };
