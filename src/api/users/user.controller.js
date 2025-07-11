@@ -136,11 +136,17 @@ export const updateUser = async (req, res) => {
 // Delete user
 export const deleteUser = async (req, res) => {
   try {
-    const id = req.params;
-    await deleteUserService(req,res);
-    res.status(200).json({ message: 'User deleted successfully' });
+    const { id } = req.params; // Get userId from URL parameter
+
+    // Call the service to delete the user by their ID
+    const deletedUser = await deleteUserService(id);
+
+    res.status(200).json({
+      message: 'User deleted successfully',
+      user: deletedUser, // Return the deleted user object (optional)
+    });
   } catch (error) {
     console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
