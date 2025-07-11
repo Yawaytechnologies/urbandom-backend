@@ -8,6 +8,8 @@ import {
   nullValidator,
 } from "../validatore/userValidator.js";
 
+import mongoose from "mongoose";
+
 export const registerUserService = async (data, file) => {
   const { username, email, userPassword, phone, firstName, lastName } = data;
 
@@ -97,34 +99,35 @@ export const getAllUsersService = async () => {
 };
 
 // Update user service
-export const updateUserService = async (req, res) => {
+export const updateUserService = async (userId, updatedData, file) => {
   try {
-    const { id } = req.params; // Extract user ID from URL parameter
-    const updates = { ...req.body }; // Copy all updated fields
+    const objectId =  new mongoose.Types.ObjectId(userId);  // Ensure userId is a valid ObjectId
 
-    // If a new profile picture is uploaded, add it to updates
-    if (req.file) {
-      updates.userProfile = {
-        data: req.file.buffer, // Store the file as a Buffer
-        contentType: req.file.mimetype, // Store the content type (MIME type)
+    // If the user is updating their password, hash it first
+    if (updatedData.userPassword) {
+      updatedData.userPassword = await hashPassword(updatedData.userPassword);
+    }
+
+    // If a new profile picture is uploaded, store it in the updated data
+    if (file) {
+      updatedData.userProfile = {
+        data: file.buffer,  // Store the file as Buffer in MongoDB
+        contentType: file.mimetype,  // Store the content type (e.g., image/jpeg)
+        base64: `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,  // Optional: Store Base64 for frontend use
       };
     }
 
-    // Find the user by their _id and update the data
-    const user = await User.findByIdAndUpdate(
-      id,   // Use _id to query the document
-      updates, // Apply the updates
-      { new: true } // Return the updated user document
-    );
+    // Update the user document by userId (MongoDB ObjectId)
+    const updatedUser = await User.findByIdAndUpdate(objectId, updatedData, { new: true });
 
-    if (!user) {
+    if (!updatedUser) {
       throw new Error('User not found');
     }
 
-    return user;
+    return updatedUser;  // Return the updated user document
   } catch (error) {
     console.error('Error in updateUserService:', error);
-    throw error;  // Propagate error to be handled by the controller
+    throw error;  // Propagate the error to be handled by the controller
   }
 };
 
