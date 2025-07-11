@@ -5,7 +5,12 @@ import cors from 'cors';
 import { swaggerServe, swaggerSetup } from './src/config/swagger.js';
 import routeuser from './src/api/users/user.route.js';  
 import { verifyToken } from './src/middlewares/jwtauth.js';  
-import mongoose from 'mongoose';
+import mongoose from 'mongoose';import CountryRoute from './src/api/country/country.route.js';
+import StateRoute from './src/api/state/state.route.js';
+import DistrictRoute from './src/api/district/district.route.js';
+import LocationRoute from './src/api/location/location.route.js';
+import PropertyRoute from './src/api/properties/property.route.js';
+
 
 dotenv.config()
 
@@ -32,10 +37,23 @@ app.use(cors());
 
 
 
+app.use('/api/country', CountryRoute);
+app.use('/api/state', StateRoute);
+app.use('/api/district', DistrictRoute);
+app.use('/api/location', LocationRoute);
+app.use('/api/property', PropertyRoute);
+
+
+
+
+
+
 
 app.get('/', (req, res) => {
     res.send('Server is running');
   });
+
+
 
 db();
 

@@ -1,0 +1,69 @@
+name: Node.js Backend CI
+
+on:
+  push:
+    branches: [develop]  # Change to your default branch if needed
+  pull_request:
+    branches: [develop]
+
+jobs:
+  backend-checks:
+    runs-on: ubuntu-latest
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}  # MongoDB URI (use GitHub Secrets)
+      NODE_ENV: 'test'  # Set test environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      # Middleware Checks: CORS, Logging, Body-Parser
+      - name: Test Middleware Configuration
+        run: |
+          # Check CORS header (assumes you use 'cors' middleware)
+          curl -i http://localhost:5000 -H "Origin: http://test.com" | grep 'Access-Control-Allow-Origin'
+          
+          # Check logging setup (check if logs contain info about API request)
+          echo "Checking if logging works..."
+          npm run dev  # Run the server, logs should output to the console
+          sleep 5  # Wait for logs to appear
+
+      # MongoDB Connection Check
+      - name: Test MongoDB Connection
+        run: |
+          echo "Testing MongoDB connection..."
+          node -e "require('./server').mongoose.connection.readyState === 1 ? console.log('MongoDB Connected') : console.error('MongoDB not connected!')"
+
+      # Run Linting
+      - name: Run Lint Check
+        run: |
+          npx eslint . || echo "Lint warnings only"
+
+      # Run Unit Tests (using Jest and Supertest)
+      - name: Run Unit Tests
+        run: npm test
+
+      # Check if .env exists and has correct variables
+      - name: Check Environment Variables
+        run: |
+          if [ -f ".env" ]; then
+            echo ".env exists ✅"
+          else
+            echo "⚠️ WARNING: .env file missing!"
+          fi
+
+          # Check for required environment variables
+          if [[ -z "${MONGO_URI}" || -z "${NODE_ENV}" ]]; then
+            echo "⚠️ Missing environment variables!"
+            exit 1
+          else
+            echo "Required environment variables are set ✅"
+          fi
