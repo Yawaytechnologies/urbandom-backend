@@ -29,7 +29,7 @@ jobs:
       - name: Test Middleware Configuration
         run: |
           # Check CORS header (assumes you use 'cors' middleware)
-          curl -i http://localhost:5000 -H "Origin: http://test.com" | grep 'Access-Control-Allow-Origin'
+          curl -i http://localhost:5001 -H "Origin: http://test.com" | grep 'Access-Control-Allow-Origin'
           
           # Check logging setup (check if logs contain info about API request)
           echo "Checking if logging works..."
