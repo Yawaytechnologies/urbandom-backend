@@ -1,4 +1,4 @@
-// swagger.js
+// docs/swagger.js
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
@@ -8,19 +8,19 @@ const options = {
     info: {
       title: 'Urbondom API',
       version: '1.0.0',
-      description: 'API documentation for the Tripsy project',
+      description: 'API documentation for the Urbondom real estate project',
     },
     servers: [
       {
-        url: 'http://localhost:5001',
+        url: 'http://localhost:5001/api',
+        description: 'Local Development Server',
       },
     ],
   },
-  apis: ['./src/api/*/*.js'], // Make sure the path is correct
+  apis: ['./src/api/**/*.js', './swagger/*.js'], // ✅ Fixed path
 };
 
 const specs = swaggerJsdoc(options);
-const swaggerServe = swaggerUi.serve;
-const swaggerSetup = swaggerUi.setup(specs);
 
-export { swaggerServe, swaggerSetup };
+export const swaggerServe = swaggerUi.serve;
+export const swaggerSetup = swaggerUi.setup(specs);
