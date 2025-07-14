@@ -2,9 +2,9 @@ name: Node.js Backend CI
 
 on:
   push:
-    branches: [develop]  # Change this to your default branch (e.g., main, develop)
+    branches: [develop]
   pull_request:
-    branches: [develop]  # When a PR is opened against develop
+    branches: [develop]
 
 jobs:
   run-server:
@@ -22,13 +22,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      
-      - name: Create .env file
-        run: |
-          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
-          echo "PORT=${{ vars.PORT }}" >> .env
-     
       - name: Run development server
-        run: |
-          npm run dev &
-          
+        run: npm run dev
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          PORT: ${{ secrets.PORT }}
