@@ -22,6 +22,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      
+      - name: Create .env file
+        run: |
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "PORT=${{ vars.PORT }}" >> .env
+     
       - name: Run development server
         run: |
           npm run dev &
