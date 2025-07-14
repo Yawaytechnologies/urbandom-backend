@@ -68,15 +68,15 @@ export const registerUserService = async (data, file) => {
 };
 
 // Login user service
-export const loginUserService = async ({ email, userPassword }) => {
-  const user = await User.findOne({ email });
+export const loginUserService = async ({ phone, userPassword }) => {
+  const user = await User.findOne({ phone });
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid phone or password");
   }
 
   const isMatch = await comparePassword(userPassword, user.userPassword);
   if (!isMatch) {
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid phone or password");
   }
 
   const token = generateToken(user.id);

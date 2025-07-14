@@ -64,6 +64,13 @@ export const loginUser = async (req, res) => {
   try {
     const {  user,token } = await loginUserService(req.body);
 
+      let userProfileBase64 = null;
+    if (user.userProfile?.data && user.userProfile?.contentType) {
+      userProfileBase64 = `data:${user.userProfile.contentType};base64,${user.userProfile.data.toString("base64")}`;
+    }
+
+    
+
     res.status(200).json({
       message: 'User logged in successfully',
       token,
@@ -74,7 +81,7 @@ export const loginUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        userProfile: user.userProfile,
+        userProfile: userProfileBase64, // Return Base64 image
       }
     });
   } catch (error) {
