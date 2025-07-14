@@ -22,8 +22,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run development server
-        run: npm run dev
+      - name: Start server (once)
+        run: node index.js
         env:
-          DB_URL: ${{ secrets.DB_URL }}
-          PORT: ${{ secrets.PORT }}
+         DB_URL: ${{ secrets.DB_URL }}
+         PORT: ${{ secrets.PORT }}
+
