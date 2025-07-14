@@ -23,8 +23,11 @@ jobs:
         run: npm install
 
       - name: Start server (once)
-        run: node index.js
+        run: |
+          node index.js &
+          sleep 5
+          curl -f http://localhost:${{ secrets.PORT }}/api-docs || exit 1
         env:
-         DB_URL: ${{ secrets.DB_URL }}
-         PORT: ${{ secrets.PORT }}
+          DB_URL: ${{ secrets.DB_URL }}
+          PORT: ${{ secrets.PORT }}
 
