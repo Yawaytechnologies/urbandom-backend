@@ -7,14 +7,16 @@ import {
   phoneValidate,
   nullValidator,
 } from "../validatore/userValidator.js";
-
+import { sendVerificationEmail } from "../utils/mailer.js";
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+
 
 export const registerUserService = async (data, file) => {
-  const { username, email, userPassword, phone, firstName, lastName } = data;
+  const { username, email, userPassword, phone } = data;
 
   // Input validation
-  if (!username || !email || !userPassword || !phone || !firstName || !lastName) {
+  if (!username || !email || !userPassword || !phone ) {
     throw new Error("All fields are required");
   }
 
@@ -46,8 +48,6 @@ export const registerUserService = async (data, file) => {
     email,
     userPassword: hashedPassword,
     phone,
-    firstName,
-    lastName,
       userProfile: file
       ? {
           data: file.buffer, // Store file as Buffer in MongoDB
@@ -63,9 +63,15 @@ export const registerUserService = async (data, file) => {
   // Generate a JWT token
   const token = generateToken(user.id);
 
+  const emailToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  const verificationLink = `${process.env.CLIENT_URL}/verify-email/${emailToken}`;
+
+  await sendVerificationEmail(email, username, verificationLink);
+
   // Return the user data and token
   return { user, token };
 };
+
 
 // Login user service
 export const loginUserService = async ({ phone, userPassword }) => {
@@ -134,8 +140,8 @@ export const updateUserService = async (userId, updatedData, file) => {
 // Delete user service
 export const deleteUserService = async (userId) => {
   try {
-    const objectId = new mongoose.Types.ObjectId(userId); // Convert the userId to MongoDB ObjectId
-
+     // Convert the userId to MongoDB ObjectId
+const objectId = new mongoose.Types.ObjectId(userId); 
     // Find and delete the user by their ObjectId
     const deletedUser = await User.findByIdAndDelete(objectId);
 

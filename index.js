@@ -64,7 +64,7 @@ const server = app.listen(PORT, async () => {
     if (!DB_URL)
       throw new Error("DB_URL is not defined in the environment variables");
     await mongoose.connect(DB_URL);
-    console.log("Connected to DB!!!!");
+   /*  console.log("Connected to DB!!!!"); */
   } catch (err) {
     console.error("Database connection error:", err.message);
     process.exit(1);
