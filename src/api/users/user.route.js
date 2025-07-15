@@ -43,16 +43,6 @@ const router = express.Router();
  *         required: true
  *         description: The phone number of the user.
  *       - in: formData
- *         name: firstName
- *         type: string
- *         required: true
- *         description: The first name of the user.
- *       - in: formData
- *         name: lastName
- *         type: string
- *         required: true
- *         description: The last name of the user.
- *       - in: formData
  *         name: userProfile
  *         type: file
  *         required: false
@@ -86,12 +76,6 @@ const router = express.Router();
  *                     phone:
  *                       type: string
  *                       example: 9876543210
- *                     firstName:
- *                       type: string
- *                       example: John
- *                     lastName:
- *                       type: string
- *                       example: Doe
  *                     userProfile:
  *                       type: string
  *                       example: data:image/jpeg;base64,/9j/4AAQSkZJRgABA...
@@ -102,6 +86,7 @@ const router = express.Router();
  */
 
 router.post('/create', singleUpload, createUser,verifyEmail );
+
 
 /**
  * @swagger
@@ -116,15 +101,15 @@ router.post('/create', singleUpload, createUser,verifyEmail );
  *     parameters:
  *       - in: body
  *         name: login
- *         description: The user's email and password for authentication
+ *         description: The user's phone and password for authentication
  *         required: true
  *         schema:
  *           type: object
  *           properties:
- *             email:
+ *               phone:
  *               type: string
- *               example: "john@example.com"
- *               description: The email of the user.
+ *               example: "1234567890"
+ *               description: The phone of the user.
  *             userPassword:
  *               type: string
  *               example: "securePassword123"
@@ -158,17 +143,11 @@ router.post('/create', singleUpload, createUser,verifyEmail );
  *                     phone:
  *                       type: string
  *                       example: "9876543210"
- *                     firstName:
- *                       type: string
- *                       example: "John"
- *                     lastName:
- *                       type: string
- *                       example: "Doe"
  *                     userProfile:
  *                       type: string
  *                       example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."  # Base64 string for the profile image (optional)
  *       400:
- *         description: Invalid email or password
+ *         description: Invalid phone or password
  *       500:
  *         description: Internal server error
  */
@@ -214,12 +193,6 @@ router.post('/create', singleUpload, createUser,verifyEmail );
  *                     phone:
  *                       type: string
  *                       example: "9876543210"
- *                     firstName:
- *                       type: string
- *                       example: "John"
- *                     lastName:
- *                       type: string
- *                       example: "Doe"
  *                     userProfile:
  *                       type: string
  *                       example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."  # Base64 string for profile image (optional)
@@ -264,12 +237,6 @@ router.get('/profile/:id', verifyToken,singleUpload, getUserProfile);
  *                   phone:
  *                     type: string
  *                     example: "9876543210"
- *                   firstName:
- *                     type: string
- *                     example: "John"
- *                   lastName:
- *                     type: string
- *                     example: "Doe"
  *                   userProfile:
  *                     type: string
  *                     example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."  # Base64 string for profile image (optional)
@@ -319,16 +286,6 @@ router.get('/users', verifyToken, singleUpload,getAllUsers);
  *         required: false
  *         description: The updated phone number of the user.
  *       - in: formData
- *         name: firstName
- *         type: string
- *         required: false
- *         description: The updated first name of the user.
- *       - in: formData
- *         name: lastName
- *         type: string
- *         required: false
- *         description: The updated last name of the user.
- *       - in: formData
  *         name: userProfile
  *         type: file
  *         required: false
@@ -359,12 +316,6 @@ router.get('/users', verifyToken, singleUpload,getAllUsers);
  *                     phone:
  *                       type: string
  *                       example: "1234567890"
- *                     firstName:
- *                       type: string
- *                       example: "John"
- *                     lastName:
- *                       type: string
- *                       example: "Doe"
  *                     userProfile:
  *                       type: string
  *                       example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."  # Optional Base64 string for profile image
@@ -423,12 +374,6 @@ router.put('/update/:id', singleUpload,verifyToken, updateUser);
  *                     phone:
  *                       type: string
  *                       example: "9876543210"
- *                     firstName:
- *                       type: string
- *                       example: "John"
- *                     lastName:
- *                       type: string
- *                       example: "Doe"
  *                     userProfile:
  *                       type: string
  *                       example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."  # Base64 string for profile image (optional)
