@@ -26,8 +26,8 @@ import {
 export const createUser = async (req, res) => {
   try {
 
-    const { username, email, userPassword, phone, firstName, lastName } = req.body;
-    if (!username || !email || !userPassword || !phone || !firstName || !lastName) {
+    const { username, email, userPassword, phone} = req.body;
+    if (!username || !email || !userPassword || !phone ) {
       return res.status(400).json({ message: "All fields are required" });
     }
     // Pass form data and file to the service for user creation
@@ -48,8 +48,6 @@ export const createUser = async (req, res) => {
         username: user.username,
         email: user.email,
         phone: user.phone,
-        firstName: user.firstName,
-        lastName: user.lastName,
         userProfile: userProfileBase64, // Return Base64 image
       },
     });
@@ -78,8 +76,6 @@ export const loginUser = async (req, res) => {
         id: user.id,
         username: user.username,
         phone: user.phone,
-        firstName: user.firstName,
-        lastName: user.lastName,
         email: user.email,
         userProfile: userProfileBase64, // Return Base64 image
       }
@@ -155,5 +151,19 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     console.error('Error deleting user:', error);
     res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByIdAndUpdate(decoded.userId, { isEmailVerified: true }, { new: true });
+    if (!user) return res.status(400).json({ message: "Invalid token or user not found" });
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Email verification error:", error);
+    res.status(400).json({ message: "Invalid or expired token" });
   }
 };

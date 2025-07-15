@@ -1,8 +1,9 @@
 import express from "express";
-import { createUser,  loginUser ,getUserProfile,getAllUsers, updateUser,deleteUser  } from "./user.controller.js";
+import { createUser,  loginUser ,getUserProfile,getAllUsers, updateUser,deleteUser ,verifyEmail } from "./user.controller.js";
 
 import { verifyToken } from "../../middlewares/jwtauth.js";
 import { singleUpload } from "../../middlewares/multerMiddleware.js";
+
 
 const router = express.Router();
 
@@ -100,7 +101,7 @@ const router = express.Router();
  *         
  */
 
-router.post('/create', singleUpload, createUser );
+router.post('/create', singleUpload, createUser,verifyEmail );
 
 /**
  * @swagger
@@ -442,7 +443,7 @@ router.put('/update/:id', singleUpload,verifyToken, updateUser);
 
 
 router.delete('/delete/:id', verifyToken,singleUpload, deleteUser); 
-
+router.get("/verify-email/:token", verifyEmail);
 router.get('/verify', verifyToken); 
 const routeuser = router;
 export default routeuser;

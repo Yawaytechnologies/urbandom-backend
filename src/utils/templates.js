@@ -1,3 +1,5 @@
+ 
+
 export const emailVerificationTemplate = (username, verificationLink) => `
 <html>
     <body style="font-family: Arial, sans-serif; line-height: 1.6;">
