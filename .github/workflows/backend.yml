@@ -1,10 +1,9 @@
 name: Node.js Backend CI
-
 on:
   push:
-    branches: [develop]  # Change this to your default branch (e.g., main, develop)
+    branches: [develop]
   pull_request:
-    branches: [develop]  # When a PR is opened against develop
+    branches: [develop]
 
 jobs:
   run-server:
@@ -22,7 +21,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run development server
+      - name: Start server (once)
         run: |
-          npm run dev &
-          
+          node index.js &
+          sleep 5
+          curl -f http://localhost:${{ secrets.PORT }}/api-docs || exit 1
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          PORT: ${{ secrets.PORT }}
+
