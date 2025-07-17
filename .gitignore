@@ -1,7 +1,4 @@
 .env
-# Environment variables for Urbandom Backend
-
-
 node_modules
 
 
