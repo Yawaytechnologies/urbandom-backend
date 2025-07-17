@@ -12,7 +12,6 @@ const router = express.Router();
 
 /**
  * @swagger
-
  * api/user/create:
  *   post:
  *      
@@ -95,7 +94,7 @@ router.post('/create', singleUpload, createUser,verifyEmail );
  *   post:
  *     summary: Login a user
  *     tags: [User]
- *     description: Authenticates a user by email and password and returns a JWT token and user profile information.
+ *     description: Authenticates a user by phone and password and returns a JWT token and user profile information.
  *     consumes:
  *       - application/json
  *     parameters:
@@ -107,13 +106,13 @@ router.post('/create', singleUpload, createUser,verifyEmail );
  *           type: object
  *           properties:
  *               phone:
- *               type: string
- *               example: "1234567890"
- *               description: The phone of the user.
- *             userPassword:
- *               type: string
- *               example: "securePassword123"
- *               description: The password of the user.
+ *                 type: string
+ *                 example: "1234567890"
+ *                 description: The phone of the user.
+ *               userPassword:
+ *                  type: string
+ *                  example: "securePassword123"
+ *                  description: The password of the user.
  *     responses:
  *       200:
  *         description: User logged in successfully
