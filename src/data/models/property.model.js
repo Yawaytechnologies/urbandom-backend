@@ -87,10 +87,11 @@ const propertySchema = new mongoose.Schema({
   },
 
   media: {
-    images: [String],   // store image URLs or filenames
-    videos: [String],
-    documents: [String], // optional
+    images: [{type:String}],   // store image URLs or filenames
+    videos: [{type: String,}], // { type: 'youtube', file: 'videoId' } or { type: 'file', file: 'filename' }
   },
+
+  
 
   createdAt: {
     type: Date,

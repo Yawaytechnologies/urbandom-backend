@@ -125,7 +125,8 @@ export const findPropertiesByLocationFilters = async (filters) => {
 
 
 export const lookingToFilters = async (lookingTo) => {
-  return await Property.find({ lookingTo })
+  // Use the correct variable name `lookingTo` instead of `lookingToValue`
+  return await Property.find({ lookingTo: lookingTo }) // Fix: use `lookingTo`
     .sort({ createdAt: -1 })
     .populate({
       path: 'location',
@@ -138,6 +139,7 @@ export const lookingToFilters = async (lookingTo) => {
       }
     });
 };
+
 
 export const filterByPropertyType = async (propertyType) => {
   return await Property.find({ propertyType })

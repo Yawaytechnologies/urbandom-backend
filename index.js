@@ -12,6 +12,7 @@ import LocationRoute from './src/api/location/location.route.js';
 import PropertyRoute from './src/api/properties/property.route.js';
 
 
+
 dotenv.config()
 
 
@@ -29,9 +30,13 @@ app.use(cors());
 
 // Swagger route
 
+app.get('/', (req, res) => {
+    res.send('Server is running');
+  });
+
   app.use('/api-docs', swaggerServe, swaggerSetup);
   app.use("/api/user", routeuser);
-  app.use(verifyToken);
+  // app.use(verifyToken);
 
 
 
@@ -49,27 +54,20 @@ app.use('/api/property', PropertyRoute);
 
 
 
-app.get('/', (req, res) => {
-    res.send('Server is running');
-  });
+
+
 
 
 
 db();
 
-const server = app.listen(PORT, async () => {
-    console.log(`⚡️⚡️⚡️[server]: Server is running at http://localhost:${PORT} ⚡️⚡️⚡️`);
-    console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
-    try {
-    if (!DB_URL)
-      throw new Error("DB_URL is not defined in the environment variables");
-    await mongoose.connect(DB_URL);
-    console.log("Connected to DB!!!!");
-  } catch (err) {
-    console.error("Database connection error:", err.message);
-    process.exit(1);
-  }
+const server = app.listen(process.env.PORT || 3000, () => {
+ console.log(
+    `⚡️⚡️⚡️[server]: Server is running at http://localhost:${PORT} ⚡️⚡️⚡️`
+  );
+  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
 });
+
 
 
 export default server;

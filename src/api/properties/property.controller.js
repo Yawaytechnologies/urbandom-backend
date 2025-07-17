@@ -1,4 +1,5 @@
 import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty, findPropertiesByLocationFilters, lookingToFilters, filterByPropertyType } from "../../service/property.service.js";
+import { handlePropertyFileUpload } from "../../utils/uploadfile.js";
 
 export const createPropertyController = async (req, res) => {
   try {
@@ -129,37 +130,23 @@ export const propertySearchController = async (req, res) => {
 
 export const lookingToController = async (req, res) => {
   try {
-    const { lookingTo } = req.query;
+    const { lookingTo } = req.params;  // Extract lookingTo from request params
 
-    if (!lookingTo) {
-      return res.status(400).json({ message: "Please provide a 'lookingTo' filter" });
+    // Validate the lookingTo type
+    const validTypes = ['rent', 'sell', 'pg-co/living'];
+    if (!validTypes.includes(lookingTo)) {
+      return res.status(400).json({ message: 'Invalid lookingTo type. Valid types are rent, sell, or pg-co/living.' });
     }
 
-    const properties = await lookingTo(lookingTo);
-
-    res.status(200).json({ count: properties.length, properties });
-  } catch (error) {
-    res.status(500).json({ message: "Looking to filter failed", error: error.message });
-  }
-}
-
-
-
-export const propertieslookingToController = async (req, res) => {
-  try {
-    const { lookingTo } = req.query;
-
-    if (!lookingTo) {
-      return res.status(400).json({ message: "Please provide a 'lookingTo' filter" });
-    }
-
+    // Fetch properties based on lookingTo value
     const properties = await lookingToFilters(lookingTo);
-
-    res.status(200).json({ count: properties.length, properties });
+    return res.status(200).json(properties);
   } catch (error) {
-    res.status(500).json({ message: "Looking to filter failed", error: error.message });
+    console.error('Error fetching properties:', error);
+    return res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 export const propertyTypeFilterController = async (req, res) => {
@@ -177,5 +164,19 @@ export const propertyTypeFilterController = async (req, res) => {
   }
 };
 
+
+export const uploadfiles = async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const files = req.files;
+    console.log(files);
+    console.log(propertyId);  
+
+    const uploadResults = await handlePropertyFileUpload(propertyId, files);
+    res.status(200).json(uploadResults);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 
