@@ -44,9 +44,9 @@ const handlePropertyFileUpload = async (propertyId, files) => {
     propertyId,
     {
       $push: {
-        images: { $each: newImages },
-        videos: { $each: newVideos },
-      },
+      "media.images": { $each: newImages },  // Adding to the 'images' array inside 'media'
+      "media.videos": { $each: newVideos },  // Adding to the 'videos' array inside 'media'
+    },
     },
     { new: true, runValidators: false }
   );

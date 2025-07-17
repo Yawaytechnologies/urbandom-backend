@@ -1,4 +1,5 @@
-import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty, findPropertiesByLocationFilters, lookingToFilters, filterByPropertyType } from "../../service/property.service.js";
+import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty, findPropertiesByLocationFilters, lookingToFilters, filterByPropertyType,  } from "../../service/property.service.js";
+import { generateMediaUrls } from "../../service/generateMedia.service.js";
 import { handlePropertyFileUpload } from "../../utils/uploadfile.js";
 
 export const createPropertyController = async (req, res) => {
@@ -46,17 +47,49 @@ export const getAllPropertiesController = async (req, res) => {
 }
 
 export const getPropertyByIdController = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
+    // Fetch property by ID
     const property = await getPropertyById(id);
+
+    // If property not found, return a 404 error
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
     }
-    res.status(200).json(property);
+
+    // Extract the image and video keys
+    const imageKeys = property.media?.images || [];
+    const videoKeys = property.media?.videos || [];
+
+    // Generate URLs for images and videos using the service
+    const { images, videos } = await generateMediaUrls(imageKeys, videoKeys);
+
+    // Return the property with URLs for images and videos
+    res.status(200).json({
+      propertyId: property._id,
+      title: property.title,
+      description: property.description,
+      price: property.price,
+      location: property.location ? property.location.name : '',
+      district: property.location?.district?.name || '',
+      state: property.location?.district?.state?.name || '',
+      country: property.location?.district?.state?.country?.name || '',
+      owner: property.owner,
+      category: property.category,
+      images,
+      videos,
+      amenities: property.amenities || [],
+      status: property.status,
+      createdAt: property.createdAt,
+      updatedAt: property.updatedAt,
+    });
+    
   } catch (error) {
+    console.error("Error fetching property by ID:", error);
     res.status(500).json({ message: "Error fetching property", error: error.message });
   }
-}
+};
 
 export const updatePropertyController = async (req, res) => {
   try {
