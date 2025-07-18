@@ -1,4 +1,5 @@
 name: Node.js Backend CI
+
 on:
   push:
     branches: [develop]
@@ -30,3 +31,18 @@ jobs:
           DB_URL: ${{ secrets.DB_URL }}
           PORT: ${{ secrets.PORT }}
 
+  auto-merge:
+    if: github.event.pull_request.merged == false && github.event.pull_request.base.ref == 'develop'
+    needs: run-server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code for merging
+        uses: actions/checkout@v3
+
+      - name: Enable Pull Request Auto-Merge
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Yawaytechnologies/urbandom-backend
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: merge
