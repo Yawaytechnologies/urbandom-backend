@@ -32,7 +32,7 @@ jobs:
           PORT: ${{ secrets.PORT }}
 
   auto-merge:
-    if: github.event.pull_request.merged == false && github.event.pull_request.base.ref == 'develop'
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     needs: run-server
     runs-on: ubuntu-latest
     steps:
