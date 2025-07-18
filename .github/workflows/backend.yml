@@ -35,6 +35,11 @@ jobs:
     if: github.event.pull_request.merged == false && github.event.pull_request.base.ref == 'develop'
     needs: run-server
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      
     steps:
       - name: Checkout code for merging
         uses: actions/checkout@v3
