@@ -15,7 +15,7 @@ export const generateUrls = async (req, res) => {
     const videoUrls = await Promise.allSettled(videoKeys.map((key) => getFileUrl(key)));
 
     res.status(200).json({
-        images: imageUrls,
-        videos: videoUrls,
+     "media.images": imageUrls,
+     "media.videos": videoUrls,
     });
 }

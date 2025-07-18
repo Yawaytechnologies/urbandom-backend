@@ -26,5 +26,5 @@ export const deleteState = async (id) => {
 }
 
 export const getStatesByCountryId = async (countryId) => {
-    return await State.find({ County: countryId }).sort({ createdAt: -1 }).populate('country');
+    return await State.find({ country: countryId }).sort({ createdAt: -1 }).populate('country');
 }

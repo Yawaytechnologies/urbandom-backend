@@ -3,6 +3,7 @@ import Location from "../data/models/location.model.js";
 import Country from "../data/models/country.model.js";
 import State from "../data/models/state.model.js";
 import District from "../data/models/district.model.js";
+import { getFileUrl } from "./third-party/s3service.js";
 
 
 export const createProperty = async (propertyData) => {
@@ -154,4 +155,27 @@ export const filterByPropertyType = async (propertyType) => {
         }
       }
     });
+};
+
+
+export const generateUrlsForProperty = async (propertyId) => {
+  const property = await Property.findById(propertyId);
+  if (!property) {
+    throw new Error("Property not found");
+  }
+
+  const imageKeys = Array.isArray(property.media?.images) ? property.media.images : [];
+  const videoKeys = Array.isArray(property.media?.videos) ? property.media.videos : [];
+
+  const imageUrls = await Promise.allSettled(imageKeys.map((key) => getFileUrl(key)));
+  const videoUrls = await Promise.allSettled(videoKeys.map((key) => getFileUrl(key)));
+
+  return {
+    images: imageUrls
+      .filter((r) => r.status === "fulfilled")
+      .map((r) => r.value),
+    videos: videoUrls
+      .filter((r) => r.status === "fulfilled")
+      .map((r) => r.value),
+  };
 };

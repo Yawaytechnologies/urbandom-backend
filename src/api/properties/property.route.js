@@ -203,7 +203,7 @@ router.get('/', getAllPropertiesController);
  *       200:
  *         description: List of filtered properties
  */
-router.get('/search/property', propertySearchController);
+router.get('/search/property',  propertySearchController);
 
 /**
  * @swagger
@@ -242,7 +242,7 @@ router.get('/type', propertyTypeFilterController);
  *       404:
  *         description: Property not found
  */
-router.get('/:id', getPropertyByIdController);
+router.get('/:id', getPropertyByIdController, );
 
 /**
  * @swagger
