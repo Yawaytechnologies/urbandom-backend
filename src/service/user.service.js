@@ -38,10 +38,6 @@ export const registerUserService = async (data, file) => {
     userProfileBase64 = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
   }
 
-  
-  
-  
-
   // Create a new user
   const newUser = new User({
     username,

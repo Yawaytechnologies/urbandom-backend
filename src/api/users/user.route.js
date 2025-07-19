@@ -14,7 +14,6 @@ const router = express.Router();
  * @swagger
  * api/user/create:
  *   post:
- *      
  *     summary: Create a new user
  *     tags: [User]
  *     description: Create a new user, including username, email, password, and optional profile image upload.
@@ -80,8 +79,7 @@ const router = express.Router();
  *                       example: data:image/jpeg;base64,/9j/4AAQSkZJRgABA...
  *       400:
  *         description: Error registering user.
- *      
- *         
+ * 
  */
 
 router.post('/create', singleUpload, createUser,verifyEmail );
@@ -90,7 +88,7 @@ router.post('/create', singleUpload, createUser,verifyEmail );
 /**
  * @swagger
  *
- * api/user/login:
+ * /api/user/login:
  *   post:
  *     summary: Login a user
  *     tags: [User]
@@ -150,11 +148,11 @@ router.post('/create', singleUpload, createUser,verifyEmail );
  *       500:
  *         description: Internal server error
  */
-
-
  
  // Added singleUpload middleware for file upload
  router.post('/login', loginUser  ); // Removed verifyToken as it’s unlikely needed for login
+
+ 
 
 /**
  * @swagger
