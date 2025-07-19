@@ -35,14 +35,19 @@ jobs:
     if: github.event.pull_request.merged == false && github.event.pull_request.base.ref == 'develop'
     needs: run-server
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      
     steps:
-      - name: Checkout code for merging
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Enable Pull Request Auto-Merge
+      - name: Enable auto-merge for PR
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: Yawaytechnologies/urbandom-backend
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}  # Use the PAT here for auto-merge
+          repository: ${{ github.repository }}
           pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: merge
