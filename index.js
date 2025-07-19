@@ -10,6 +10,7 @@ import StateRoute from './src/api/state/state.route.js';
 import DistrictRoute from './src/api/district/district.route.js';
 import LocationRoute from './src/api/location/location.route.js';
 import PropertyRoute from './src/api/properties/property.route.js';
+import OwnerRoute from './src/api/sellproperty/owner.route.js';
 
 
 dotenv.config()
@@ -31,7 +32,8 @@ app.use(cors());
 
   app.use('/api-docs', swaggerServe, swaggerSetup);
   app.use("/api/user", routeuser);
-  app.use(verifyToken);
+  app.use ('/api/owner', OwnerRoute);
+  // app.use(verifyToken);
 
 
 
