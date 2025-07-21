@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const propertySchema = new mongoose.Schema({
+  owner: {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Owner',
+    required: true,
+  },
   title: String,
   propertyType: {
     type: String,

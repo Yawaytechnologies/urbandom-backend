@@ -10,6 +10,7 @@ import {
 import { sendVerificationEmail } from "../utils/mailer.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import Booking from "../data/models/booking.model.js";
 
 // Register Owner
 export const registerOwnerService = async (data, file) => {
@@ -117,3 +118,18 @@ export const deleteOwnerService = async (ownerId) => {
 
   return deleted;
 };
+
+// Get the user's bookings and populate property and owner details
+export const getOwnerBookingsService = async (ownerId) => {
+  const bookings = await Booking.find({ "property.owner": ownerId })
+    .populate('user', 'username email phone') // Populate user details
+    .populate({
+      path: 'property',
+      populate: {
+        path: 'owner',
+        select: 'username email phone', // Select only the required fields
+        },
+    });
+    return bookings;
+}
+
