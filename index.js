@@ -11,6 +11,7 @@ import DistrictRoute from './src/api/district/district.route.js';
 import LocationRoute from './src/api/location/location.route.js';
 import PropertyRoute from './src/api/properties/property.route.js';
 import OwnerRoute from './src/api/sellproperty/owner.route.js';
+import BookingRoute from './src/api/booking/booking.route.js';
 
 
 dotenv.config()
@@ -44,6 +45,12 @@ app.use('/api/state', StateRoute);
 app.use('/api/district', DistrictRoute);
 app.use('/api/location', LocationRoute);
 app.use('/api/property', PropertyRoute);
+app.use('/api/booking', BookingRoute);
+
+  // Health check route
+  app.get('/healthcheck', (req, res) => {
+    res.status(200).json({ message: 'API is running smoothly' });
+  });
 
 
 
