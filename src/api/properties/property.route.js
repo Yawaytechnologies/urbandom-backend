@@ -6,9 +6,13 @@ import {
   deletePropertyController,
   updatePropertyController,
   propertySearchController,
-  propertieslookingToController,
-  propertyTypeFilterController
+  lookingToController,
+  propertyTypeFilterController,
+  uploadfiles,
+  getPropertiesLimitController
 } from './property.controller.js';
+import { generateUrls } from '../../utils/generateUrls.js';
+import { multipleUpload } from '../../middlewares/multerMiddleware.js';
 
 const router = express.Router();
 
@@ -160,6 +164,7 @@ const router = express.Router();
  *         description: Bad request
  */
 router.post('/', createPropertyController);
+router.get('/limit', getPropertiesLimitController);
 
 /**
  * @swagger
@@ -200,28 +205,7 @@ router.get('/', getAllPropertiesController);
  *       200:
  *         description: List of filtered properties
  */
-router.get('/search/property', propertySearchController);
-
-/**
- * @swagger
- * /property/lookingTo:
- *   get:
- *     summary: Filter properties by 'lookingTo' (rent, sell, pg-co/living)
- *     tags: [Properties]
- *     parameters:
- *       - in: query
- *         name: lookingTo
- *         schema:
- *           type: string
- *           enum: [rent, sell, pg-co/living]
- *         required: true
- *     responses:
- *       200:
- *         description: Filtered properties
- *       400:
- *         description: Missing or invalid filter
- */
-router.get('/lookingTo', propertieslookingToController);
+router.get('/search/property',  propertySearchController);
 
 /**
  * @swagger
@@ -260,7 +244,7 @@ router.get('/type', propertyTypeFilterController);
  *       404:
  *         description: Property not found
  */
-router.get('/:id', getPropertyByIdController);
+router.get('/:id', getPropertyByIdController, );
 
 /**
  * @swagger
@@ -303,5 +287,71 @@ router.put('/:id', updatePropertyController);
  *         description: Property deleted
  */
 router.delete('/:id', deletePropertyController);
+
+/**
+ * @swagger
+ * /property/:propertyId/upload:
+ *   post:
+ *     summary: Upload files for a property
+ *     tags: [Properties]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               propertyId:
+ *                 type: string
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Files uploaded successfully
+ */
+
+router.post('/:propertyId/upload', multipleUpload, uploadfiles);
+/**
+ * @swagger
+ * /property/{propertyId}/generateUrls:
+ *   get:
+ *     summary: Generate URLs for property images and videos
+ *     tags: [Properties]
+ *     parameters:
+ *       - in: path
+ *         name: propertyId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: URLs for property images and videos
+ */
+router.get('/:propertyId/generateUrls', generateUrls);
+
+/**
+ * @swagger
+ * /property/lookingTo/{lookingTo}:
+ *   get:
+ *     summary: Get properties based on lookingTo type (rent, sell, pg-co/living)
+ *     tags: [Properties]
+ *     parameters:
+ *       - in: path
+ *         name: lookingTo
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [rent, sell, pg-co/living]
+ *     responses:
+ *       200:
+ *         description: List of properties matching the lookingTo type
+ */
+router.get('/lookingTo/:lookingTo', lookingToController);
+
+
+
 
 export default router;
