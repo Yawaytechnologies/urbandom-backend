@@ -29,7 +29,6 @@ export const createProperty = async (propertyData) => {
 
 export const getAllProperties = async () => {
   return await Property.find().sort({ createdAt: -1 })
-  .populate('owner') // Populate ownership details
   .populate({
     path: 'location',
     populate: {
@@ -154,6 +153,23 @@ export const filterByPropertyType = async (propertyType) => {
   return await Property.find({ propertyType })
     .sort({ createdAt: -1 })
     .populate('owner') // Populate ownership details
+    .populate({
+      path: 'location',
+      populate: {
+        path: 'district',
+        populate: {
+          path: 'state',
+          populate: { path: 'country' }
+        }
+      }
+    });
+};
+
+//get properties limit =5
+export const getPropertieslimit = async (limit = 5) => {
+  return await Property.find()
+    .sort({ createdAt: -1 })
+    .limit(limit)
     .populate({
       path: 'location',
       populate: {
