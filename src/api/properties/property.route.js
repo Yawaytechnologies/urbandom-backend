@@ -7,7 +7,7 @@ import {
   updatePropertyController,
   propertySearchController,
   lookingToController,
-  propertyTypeFilterController,
+  propertyLookingToFilterController,
   uploadfiles,
   getPropertiesLimitController
 } from './property.controller.js';
@@ -224,7 +224,7 @@ router.get('/search/property',  propertySearchController);
  *       200:
  *         description: Filtered properties
  */
-router.get('/type', propertyTypeFilterController);
+router.get('/:lookingTo', propertyLookingToFilterController);
 
 /**
  * @swagger
