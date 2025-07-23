@@ -233,9 +233,10 @@ export const getPropertiesLimitController = async (req, res) => {
     const limit = 5; // hardcoded fixed limit
 
     const properties = await Property.find()
+      .populate('location') // ✅ populate the location field
       .sort({ createdAt: -1 })
       .limit(limit)
-      .lean();
+      .lean(); // return plain JS objects
 
     const updatedProperties = await Promise.all(
       properties.map(async (property) => {
