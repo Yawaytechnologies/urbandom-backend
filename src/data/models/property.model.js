@@ -14,7 +14,7 @@ const propertySchema = new mongoose.Schema({
   },
   lookingTo: {
     type: String,
-    enum: ['rent', 'sell', 'pg-co/living'],
+    enum: ['rent', 'sell', 'pg-co-living'],
     required: true,
   },
   subProperty: {

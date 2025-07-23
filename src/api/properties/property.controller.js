@@ -198,18 +198,55 @@ export const lookingToController = async (req, res) => {
 
 
 
-export const propertyTypeFilterController = async (req, res) => {
+export const propertyLookingToFilterController = async (req, res) => {
   try {
-    const { type } = req.query;
+    const { lookingTo } = req.params;
 
-    if (!type) {
-      return res.status(400).json({ message: "Please provide a 'type' query param like ?type=residential" });
+    const allowedTypes = ['rent', 'sell', 'pg-co-living'];
+    if (!allowedTypes.includes(lookingTo)) {
+      return res.status(400).json({
+        message: `Invalid type. Allowed: ${allowedTypes.join(', ')}`
+      });
     }
 
-    const properties = await filterByPropertyType(type);
-    res.status(200).json({ count: properties.length, properties });
+    const properties = await Property.find({ lookingTo })
+      .populate('location')                  // ✅ populate location
+      .sort({ createdAt: -1 })               // ✅ latest first
+      .limit(5)                              // ✅ limit to 5
+      .lean();
+
+    const updatedProperties = await Promise.all(
+      properties.map(async (property) => {
+        const imageKeys = Array.isArray(property.media?.images) ? property.media.images : [];
+        const videoKeys = Array.isArray(property.media?.videos) ? property.media.videos : [];
+
+        const imageUrls = await Promise.allSettled(imageKeys.map((key) => getFileUrl(key)));
+        const videoUrls = await Promise.allSettled(videoKeys.map((key) => getFileUrl(key)));
+
+        const filteredImages = imageUrls.filter(r => r.status === 'fulfilled').map(r => r.value);
+        const filteredVideos = videoUrls.filter(r => r.status === 'fulfilled').map(r => r.value);
+
+        return {
+          ...property,
+          media: {
+            images: filteredImages,
+            videos: filteredVideos,
+          }
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      count: updatedProperties.length,
+      data: updatedProperties
+    });
+
   } catch (error) {
-    res.status(500).json({ message: "Property type filter failed", error: error.message });
+    res.status(500).json({
+      message: 'Failed to filter properties',
+      error: error.message
+    });
   }
 };
 
