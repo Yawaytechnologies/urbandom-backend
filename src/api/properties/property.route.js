@@ -207,24 +207,7 @@ router.get('/', getAllPropertiesController);
  */
 router.get('/search/property',  propertySearchController);
 
-/**
- * @swagger
- * /property/type:
- *   get:
- *     summary: Filter properties by property type (residential, commercial)
- *     tags: [Properties]
- *     parameters:
- *       - in: query
- *         name: propertyType
- *         schema:
- *           type: string
- *           enum: [residential, commercial]
- *         required: true
- *     responses:
- *       200:
- *         description: Filtered properties
- */
-router.get('/:lookingTo', propertyLookingToFilterController);
+
 
 /**
  * @swagger
@@ -245,6 +228,25 @@ router.get('/:lookingTo', propertyLookingToFilterController);
  *         description: Property not found
  */
 router.get('/:id', getPropertyByIdController, );
+
+/**
+ * @swagger
+ * /property/type:
+ *   get:
+ *     summary: Filter properties by property type (residential, commercial)
+ *     tags: [Properties]
+ *     parameters:
+ *       - in: query
+ *         name: propertyType
+ *         schema:
+ *           type: string
+ *           enum: [residential, commercial]
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Filtered properties
+ */
+router.get('/lookingTo/:lookingTo', propertyLookingToFilterController);
 
 /**
  * @swagger
