@@ -11,7 +11,6 @@ export const createProperty = async (propertyData) => {
 
   // Populate location → district → state → country
   return await Property.findById(saved._id)
-  .populate('owner') // Populate ownership details
   .populate({
     path: 'location',
     populate: {
@@ -46,7 +45,6 @@ export const getAllProperties = async () => {
 
 export const getPropertyById = async (id) => {
   return await Property.findById(id)
-  .populate('owner') // Populate ownership details
  .populate({
     path: 'location',
     populate: {
@@ -64,7 +62,6 @@ export const getPropertyById = async (id) => {
 
 export const updateProperty = async (id, propertyData) => {
   return await Property.findByIdAndUpdate(id, propertyData, { new: true })
-    .populate('owner') // Populate ownership details
   .populate({
     path: 'location',
     populate: {
@@ -119,7 +116,6 @@ export const findPropertiesByLocationFilters = async (filters) => {
   // 🔍 Fetch Properties
   return await Property.find({ location: { $in: locationIds } })
     .sort({ createdAt: -1 })
-    .populate('owner') // Populate ownership details
     .populate({
       path: 'location',
       populate: {
@@ -136,7 +132,6 @@ export const findPropertiesByLocationFilters = async (filters) => {
 export const lookingToFilters = async (lookingTo) => {
   return await Property.find({ lookingTo })
     .sort({ createdAt: -1 })
-    .populate('owner') // Populate ownership details
     .populate({
       path: 'location',
       populate: {
@@ -152,7 +147,6 @@ export const lookingToFilters = async (lookingTo) => {
 export const filterByPropertyType = async (propertyType) => {
   return await Property.find({ propertyType })
     .sort({ createdAt: -1 })
-    .populate('owner') // Populate ownership details
     .populate({
       path: 'location',
       populate: {
